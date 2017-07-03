@@ -10,7 +10,7 @@ class RoutesTableSeeder extends Seeder
     public function run()
     {
         // TestDummy::times(20)->create('App\Post');
-    	$params = [
+    	$routes = [
     		[
     			'Pool_A',
     			'Pool_E',
@@ -38,13 +38,13 @@ class RoutesTableSeeder extends Seeder
     		]
     	];
 
-    	foreach($params as $key => $param)
+    	foreach($routes as $key => $route)
     	{
-	        $origin = \App\Pool::where('name', $param[0])->first();
-        	$destination = \App\Pool::where('name', $param[1])->first();
+	        $origin = \App\Pool::where('name', $route[0])->first();
+        	$destination = \App\Pool::where('name', $route[1])->first();
         
-    	    $origin->destinations()->save($destination,array('duration' => $param[2]));
-            // App\Route::create($param);
+    	    $origin->destinations()->save($destination,array('duration' => $route[2]));
+            // App\Route::create($route);
     	}
 
     }

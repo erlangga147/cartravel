@@ -50,30 +50,35 @@ class PromotionController extends Controller
         $display_name = $parameters['display_name'];
         $description = $parameters['description'];
 
-        $image = $request->file('image_field');
+        if(!empty($parameters['image_field']))
+        {
+            $image = $request->file('image_field');
 
-        $image_extension = $image->getClientOriginalExtension(); 
+            $image_extension = $image->getClientOriginalExtension(); 
 
-        $image_original_name = $image->getClientOriginalName();
-        $image_mime = $image->getClientMimeType();
-        $image_name = $image->getFileName().'.'.$image_extension;
+            $image_original_name = $image->getClientOriginalName();
+            $image_mime = $image->getClientMimeType();
+            $image_name = $image->getFileName().'.'.$image_extension;
 
-        Storage::put($image_name, File::get($image), 'public');
+            Storage::put($image_name, File::get($image), 'public');
+        }
 
         $promotion = new \App\Promotion();
 
         $promotion->name = $name;
         $promotion->display_name = $display_name;
         $promotion->description = $description;
-        $promotion->image_name = $image_name;
-        $promotion->mime = $image_mime;
-        $promotion->original_image_name = $image_original_name;
+    
+        if(!empty($parameters['image_field']))
+        {
+            $promotion->image_name = $image_name;
+            $promotion->mime = $image_mime;
+            $promotion->original_image_name = $image_original_name;    
+        }
 
         $promotion->save();
         
-        return response()->json([], 200);
-        
-        // return $image->getClientOriginalExtension();
+        return response()->json([], 200);        
     }
 
     /**
@@ -120,6 +125,41 @@ class PromotionController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $parameters = $request->only('name','display_name','description','image_field');
+
+        $name = $parameters['name'];
+        $display_name = $parameters['display_name'];
+        $description = $parameters['description'];
+
+        if(!empty($parameters['image_field']))
+        {
+            $image = $request->file('image_field');
+
+            $image_extension = $image->getClientOriginalExtension(); 
+
+            $image_original_name = $image->getClientOriginalName();
+            $image_mime = $image->getClientMimeType();
+            $image_name = $image->getFileName().'.'.$image_extension;
+
+            Storage::put($image_name, File::get($image), 'public');
+        }
+        
+        $promotion = \App\Promotion::find($id);
+
+        $promotion->name = $name;
+        $promotion->display_name = $display_name;
+        $promotion->description = $description;
+        
+        if(!empty($parameters['image_field']))
+        {
+            $promotion->image_name = $image_name;
+            $promotion->mime = $image_mime;
+            $promotion->original_image_name = $image_original_name;    
+        }
+
+        $promotion->save();
+        
+        return response()->json([], 200);
     }
 
     /**

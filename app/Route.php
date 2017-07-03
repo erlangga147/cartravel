@@ -9,6 +9,8 @@ class Route extends Model
     //
 	protected $fillable = ['origin_id','destination_id','duration'];
 
+    protected $hidden = ['created_at', 'updated_at'];
+    
     public function origin()
     {
     	return $this->belongsTo('App\Pool','origin_id');

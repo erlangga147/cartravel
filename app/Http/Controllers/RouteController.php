@@ -72,6 +72,9 @@ class RouteController extends Controller
     public function show($id)
     {
         //
+        $route = \App\Route::find($id);
+
+        return response()->json($route, 200);
     }
 
     /**
@@ -95,6 +98,17 @@ class RouteController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $parameters = $request->only('duration');
+
+        $duration = $parameters['duration'];
+
+        $route = \App\Route::find($id);
+
+        $route->duration = $duration;
+
+        $route->save();
+
+        return response()->json($duration, 200);
     }
 
     /**
@@ -106,5 +120,10 @@ class RouteController extends Controller
     public function destroy($id)
     {
         //
+        $route = \App\Route::find($id);
+
+        $route->delete();
+
+        return response()->json([], 200);
     }
 }

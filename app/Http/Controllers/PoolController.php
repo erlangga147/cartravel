@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Input;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -58,6 +62,44 @@ class PoolController extends Controller
     public function store(Request $request)
     {
         //
+        $parameters = $request->only('name','display_name','description','address','city','image_field');
+
+        $name = $parameters['name'];
+        $display_name = $parameters['display_name'];
+        $description = $parameters['description'];
+        $address = $parameters['address'];
+        $city = $parameters['city'];
+
+        if(!empty($parameters['image_field']))
+        {
+            $image = $request->file('image_field');
+
+            $image_extension = $image->getClientOriginalExtension(); 
+
+            $image_original_name = $image->getClientOriginalName();
+            $image_mime = $image->getClientMimeType();
+            $image_name = $image->getFileName().'.'.$image_extension;
+            Storage::put($image_name, File::get($image), 'public');
+        }
+
+        $pool = new \App\Pool();
+
+        $pool->name = $name;
+        $pool->display_name = $display_name;
+        $pool->description = $description;
+        $pool->address = $address;
+        $pool->city = $city;
+        
+        if(!empty($parameters['image_field']))
+        {
+            $pool->image_name = $image_name;
+            $pool->mime = $image_mime;
+            $pool->original_image_name = $image_original_name;    
+        }
+
+        $pool->save();
+
+        return response()->json([], 200);
     }
 
     /**
@@ -66,9 +108,21 @@ class PoolController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($name)
     {
         //
+        $pool = \App\Pool::where('name',$name)->first();
+
+        return response()->json($pool, 200);
+    }
+
+    public function getImage($pool_name)
+    {
+        $pool = \App\Pool::where('name',$pool_name)->first();
+
+        $image = Storage::get($pool->image_name);
+
+        return (new Response($image, 200))->header('Content-Type', $pool->mime);
     }
 
     /**
@@ -92,6 +146,44 @@ class PoolController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $parameters = $request->only('name','display_name','description','address','city','image_field');
+
+        $name = $parameters['name'];
+        $display_name = $parameters['display_name'];
+        $description = $parameters['description'];
+        $address = $parameters['address'];
+        $city = $parameters['city'];
+
+        if(!empty($parameters['image_field']))
+        {
+            $image = $request->file('image_field');
+
+            $image_extension = $image->getClientOriginalExtension(); 
+
+            $image_original_name = $image->getClientOriginalName();
+            $image_mime = $image->getClientMimeType();
+            $image_name = $image->getFileName().'.'.$image_extension;
+            Storage::put($image_name, File::get($image), 'public');
+        }
+
+        $pool = \App\Pool::find($id);
+
+        $pool->name = $name;
+        $pool->display_name = $display_name;
+        $pool->description = $description;
+        $pool->address = $address;
+        $pool->city = $city;
+    
+        if(!empty($parameters['image_field']))
+        {
+            $pool->image_name = $image_name;
+            $pool->mime = $image_mime;
+            $pool->original_image_name = $image_original_name;    
+        }
+
+        $pool->save();
+
+        return response()->json([], 200);
     }
 
     /**
@@ -103,5 +195,12 @@ class PoolController extends Controller
     public function destroy($id)
     {
         //
+        $pool = \App\Pool::find($id);
+
+        Storage::delete($pool->image_name);
+
+        $pool->delete();
+
+        return response()->json([], 200);
     }
 }

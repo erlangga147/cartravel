@@ -45,6 +45,23 @@ class SeatLayoutController extends Controller
     public function store(Request $request)
     {
         //
+        $parameters = $request->only('carType_id','seat_number','row','column');
+
+        $carType_id = $parameters['carType_id'];
+        $seat_number = $parameters['seat_number'];
+        $row = $parameters['row'];
+        $column = $parameters['column'];
+
+        $seat = new \App\SeatLayout();
+
+        $seat->carType_id = $carType_id;
+        $seat->seat_number = $seat_number;
+        $seat->row = $row;
+        $seat->column = $column;
+
+        $seat_layout->save();
+
+        return response()->json([], 200);
     }
 
     /**
@@ -79,6 +96,21 @@ class SeatLayoutController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $parameters = $request->only('seat_number','row','column');
+
+        $seat_number = $parameters['seat_number'];
+        $row = $parameters['row'];
+        $column = $parameters['column'];
+
+        $seat = \App\SeatLayout::find($id);
+
+        $seat->seat_number = $seat_number;
+        $seat->row = $row;
+        $seeat->column = $column;
+
+        $seat->save();
+
+        return response()->json([], 200);
     }
 
     /**
@@ -90,5 +122,10 @@ class SeatLayoutController extends Controller
     public function destroy($id)
     {
         //
+        $seat = \App\SeatLayout::find($id);
+
+        $seat->delete();
+
+        return response()->json([], 200);   
     }
 }

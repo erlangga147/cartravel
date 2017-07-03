@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Input;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Response;
 
 class CarTypeController extends Controller
 {
@@ -20,6 +20,7 @@ class CarTypeController extends Controller
     {
         //
         $carTypes = \App\CarType::all();
+        
         return response()->json($carTypes, 200);
     }
 
@@ -42,6 +43,25 @@ class CarTypeController extends Controller
     public function store(Request $request)
     {
         //
+        $parameters = $request->only('name','display_name','description','capacity');
+
+        $name = $parameters['name'];
+        
+        $display_name = $parameters['display_name'];
+        $description = $parameters['description'];
+        $capacity = $parameters['capacity'];
+
+        $carType = new \App\CarType();
+
+        $carType->name = $name;
+        $carType->display_name = $display_name;
+        $carType->description = $description;
+        $carType->capacity = $capacity;
+
+        $carType->save();
+
+        return response()->json([], 200);
+
     }
 
     /**
@@ -53,6 +73,9 @@ class CarTypeController extends Controller
     public function show($id)
     {
         //
+        $carType = \App\CarType::find($id);
+        
+        return response()->json($carType, 200);
     }
 
     /**
@@ -76,6 +99,24 @@ class CarTypeController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $parameters = $request->only('name','display_name','description','capacity');
+
+        $name = $parameters['name'];
+        
+        $display_name = $parameters['display_name'];
+        $description = $parameters['description'];
+        $capacity = $parameters['capacity'];
+
+        $carType = \App\CarType::find($id);
+
+        $carType->name = $name;
+        $carType->display_name = $display_name;
+        $carType->description = $description;
+        $carType->capacity = $capacity;
+
+        $carType->save();
+
+        return response()->json([], 200);
     }
 
     /**
@@ -87,5 +128,10 @@ class CarTypeController extends Controller
     public function destroy($id)
     {
         //
+        $carType = \App\CarType::find($id);
+
+        $carType->delete();
+
+        return response()->json([], 200);
     }
 }

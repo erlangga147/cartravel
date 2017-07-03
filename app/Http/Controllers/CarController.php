@@ -44,6 +44,23 @@ class CarController extends Controller
     public function store(Request $request)
     {
         //
+        $parameters = $request->only('carType_id','brand','license_plate','year');
+
+        $carType_id = $parameters['carType_id'];
+        $brand = $parameters['brand'];
+        $license_plate = $parameters['license_plate'];
+        $year = $parameters['year'];
+
+        $car = new \App\Car();
+
+        $car->carType_id = $carType_id;
+        $car->brand = $brand;
+        $car->license_plate = $license_plate;
+        $car->year = $year;
+
+        $car->save();
+
+        return response()->json([], 200);
     }
 
     /**
@@ -55,6 +72,9 @@ class CarController extends Controller
     public function show($id)
     {
         //
+        $car = \App\Car::find($id);
+
+        return response()->json($car, 200);
     }
 
     /**
@@ -78,6 +98,23 @@ class CarController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $parameters = $request->only('carType_id','brand','license_plate','year');
+
+        $carType_id = $parameters['carType_id'];
+        $brand = $parameters['brand'];
+        $license_plate = $parameters['license_plate'];
+        $year = $parameters['year'];
+
+        $car = \App\Car::find($id);
+
+        $car->carType_id = $carType_id;
+        $car->brand = $brand;
+        $car->license_plate = $license_plate;
+        $car->year = $year;
+
+        $car->save();
+        
+        return response()->json($car, 200);
     }
 
     /**
@@ -89,5 +126,10 @@ class CarController extends Controller
     public function destroy($id)
     {
         //
+        $car = \App\Car::find($id);
+
+        $car->delete();
+
+        return response()->json($car, 200);
     }
 }

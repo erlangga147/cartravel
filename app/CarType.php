@@ -15,6 +15,6 @@ class CarType extends Model
 
     public function seatLayout()
     {
-    	return $this->hasMany('App\SeatLayout','carType_id');
+    	return $this->hasMany('App\SeatLayout','carType_id')->withTimestamps();
     }
 }

@@ -16,7 +16,12 @@ class CreatePoolsTable extends Migration
         Schema::create('pools', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->string('display_name')->nullable();
+            $table->string('display_name');
+
+            $table->string('image_name')->nullable();
+            $table->string('mime')->nullable();
+            $table->string('original_image_name')->nullable();
+            
             $table->string('description')->nullable();
             $table->string('address');
             $table->string('city');
@@ -30,7 +35,8 @@ class CreatePoolsTable extends Migration
             $table->integer('origin_id')->unsigned();
             $table->integer('destination_id')->unsigned();
             $table->float('duration')->unsigned();
-
+            $table->timestamps();
+            
             $table->foreign('origin_id')->references('id')->on('pools')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('destination_id')->references('id')->on('pools')
