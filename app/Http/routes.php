@@ -27,7 +27,6 @@ $api->version('v1', function ($api){
 	//Pools
 	//get all pools of the travel
 	$api->get('pools', 'App\Http\Controllers\PoolController@index'); 
-	
 	$api->post('pool/store','App\Http\Controllers\PoolController@store');
 	$api->get('pool/{name}','App\Http\Controllers\PoolController@show');
 	$api->post('pool/{id}','App\Http\Controllers\PoolController@update');
